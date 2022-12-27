@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+
+  redis:
+    image: redis:7.0.5-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--requirepass", "SUPER_SECRET_PASSWORD" ]
+
+  postgres: 
+    image: postgres:13
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=test
+      - POSTGRES_PASSWORD=postgres
+      - PGTZ=America/Argentina/Buenos_Aires 
+    volumes:
+      - pgdb_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    ports:
+      - 8081:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      
+volumes:
+  pgdb_data:
+  pgadmin_data:
